@@ -1,0 +1,19 @@
+{
+  "name": "todo-material-backend",
+  "version": "1.0.0",
+  "description": "backend for my todo app built with react and material ui",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "author": "Sabir Mahsud",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
