@@ -13,7 +13,7 @@ function TodoContextProvider({ children }) {
 
     const todoAppData = localStorage.getItem(`todoAppData:${userEmail}`);
     const myTodos = todoAppData ? JSON.parse(todoAppData).todos : todosArray;
-    const myGroups = todoAppData ? JSON.parse(todoAppData).todos : groupsArray;
+    const myGroups = todoAppData ? JSON.parse(todoAppData).groups : groupsArray;
 
     const [todos, setTodos] = useState(myTodos || []);
     const [filteredTodos, setFilteredTodos] = useState(todos);
@@ -43,7 +43,7 @@ function TodoContextProvider({ children }) {
     }
 
     useEffect(() => {
-        localStorage.setItem(`todoAppData:${userEmail}`, JSON.stringify({ todos, myGroups }));
+        localStorage.setItem(`todoAppData:${userEmail}`, JSON.stringify({ todos, groups: myGroups }));
     }, [todos])
 
     return (

@@ -60,7 +60,7 @@ export default function GroupsContextProvider({ children }) {
     }
 
     useEffect(() => {
-        localStorage.setItem(`todoAppData:${userEmail}`, JSON.stringify({ myTodos, groups }));
+        localStorage.setItem(`todoAppData:${userEmail}`, JSON.stringify({ todos: myTodos, groups }));
     }, [groups])
 
     return (
