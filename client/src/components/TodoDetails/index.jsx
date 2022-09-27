@@ -42,7 +42,7 @@ export default function TodoDetails() {
 
     const handleModalDoneBaseModal = () => {
         if (isFormValid()) {
-            const groupId = groups.find(group.name === group).id;
+            const groupId = groups.find(item => item.name === group).id;
 
             const newTodo = {
                 id: uuidv4(),
