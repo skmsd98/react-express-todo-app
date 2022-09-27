@@ -3,16 +3,14 @@ import AuthContext from '../context/AuthContext';
 import GroupsContext from '../context/GroupsContext'
 import TodosContext from '../context/TodosContext';
 
-import todosArray from '../data/todos';
 import groupsArray from '../data/groups';
 
 export default function GroupsContextProvider({ children }) {
     const { userEmail } = useContext(AuthContext);
     const { todos, setTodos } = useContext(TodosContext);
 
-    const todoAppData = localStorage.getItem(`todoAppData:${userEmail}`);
-    const myTodos = todoAppData ? JSON.parse(todoAppData).todos : todosArray;
-    const myGroups = todoAppData ? JSON.parse(todoAppData).groups : groupsArray;
+    const localStorageGroups = localStorage.getItem(`todoAppData:${userEmail}:groups`);
+    const myGroups = localStorageGroups ? JSON.parse(localStorageGroups) : groupsArray;
 
     const [groups, setGroups] = useState(myGroups || []);
 
@@ -28,23 +26,34 @@ export default function GroupsContextProvider({ children }) {
     }
 
     const updateGroup = (group) => {
-        // Updating group deletes all todos associated with that group
         const groupNameExists = groups.find(({ name }) => name === group.name);
         if (groupNameExists) {
             return alert('Group name already exists')
         }
         const updatedGroups = groups.map(groupItem => {
             if (groupItem.id === group.id) {
-                return group;
+                return {
+                    ...groupItem,
+                    ...group
+                };
             }
 
             return groupItem;
         })
-        const updatedTodos = todos.filter(todo => todo.group !== group.name);
+
+        const updatedTodos = todos.map(todo => {
+            if (todo.groupId === group.id && todo.group !== group.name) {
+                return {
+                    ...todo,
+                    group: group.name
+                }
+            }
+
+            return todo;
+        })
 
         setGroups(updatedGroups);
         setTodos(updatedTodos);
-        alert("Todos associated with this group deleted")
     }
 
 
@@ -60,7 +69,7 @@ export default function GroupsContextProvider({ children }) {
     }
 
     useEffect(() => {
-        localStorage.setItem(`todoAppData:${userEmail}`, JSON.stringify({ todos: myTodos, groups }));
+        localStorage.setItem(`todoAppData:${userEmail}:groups`, JSON.stringify(groups));
     }, [groups])
 
     return (

@@ -69,6 +69,59 @@ export default function FilterContextProvider({ children }) {
         filterTodos(filters);
     }, [todos])
 
+    useEffect(() => {
+        // After every change in groups, sync the changes with groups in filters
+        let newFilters = [];
+        const currentFilterGroups = filters.groups;
+
+        const addedGroups = contextGroups.filter(contextGroup =>
+            !currentFilterGroups.some(filterGroup =>
+                contextGroup.id === filterGroup.id
+            )
+        );
+
+        addedGroups.forEach(group => {
+            group.checked = true;
+        })
+
+        const groupsAfterDeletion = currentFilterGroups.filter(filterGroup =>
+            contextGroups.some(contextGroup =>
+                contextGroup.id === filterGroup.id
+            )
+        );
+
+        const groupsAfterAddDelete = [...groupsAfterDeletion, ...addedGroups];
+
+        const groupsNotUpdated = groupsAfterAddDelete.filter(
+            filterGroup =>
+                !contextGroups.some(contextGroup =>
+                    (contextGroup.id === filterGroup.id) &&
+                    (contextGroup.name !== filterGroup.name)
+                )
+        );
+
+        const updatedGroups = contextGroups.filter(contextGroup =>
+            groupsAfterAddDelete.some(filterGroup =>
+                (contextGroup.id === filterGroup.id) &&
+                (contextGroup.name !== filterGroup.name)
+            )
+        );
+
+        updatedGroups.forEach(group => {
+            group.checked = true;
+        })
+
+        const groupsAfterUpdating = [...groupsNotUpdated, ...updatedGroups];
+
+        newFilters = {
+            ...filters,
+            groups: groupsAfterUpdating
+        };
+
+        setFilters(newFilters);
+        filterTodos(newFilters);
+    }, [contextGroups])
+
     return (
         <FilterContext.Provider value={{
             filters,

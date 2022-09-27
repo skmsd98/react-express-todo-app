@@ -42,12 +42,15 @@ export default function TodoDetails() {
 
     const handleModalDoneBaseModal = () => {
         if (isFormValid()) {
+            const groupId = groups.find(group.name === group).id;
+
             const newTodo = {
                 id: uuidv4(),
                 text,
                 dueDate,
                 priority,
                 group,
+                groupId,
                 isActive: true
             };
 
@@ -58,7 +61,8 @@ export default function TodoDetails() {
                     text,
                     dueDate,
                     priority,
-                    group
+                    group,
+                    groupId
                 });
 
             handleModalClose();
